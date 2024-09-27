@@ -1,5 +1,7 @@
 // Flutter imports:
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:gap/gap.dart';
@@ -8,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/constant/colors.dart';
+import 'package:pomodoro/constant/sound.dart';
 import 'package:pomodoro/model/shaft/shaft.dart';
 import 'package:pomodoro/provider/shaft_provider.dart';
 import 'package:pomodoro/screen/setting/setting_screen.dart';
@@ -38,6 +41,8 @@ class DrawerScreen extends HookConsumerWidget {
                     ),
                   ),
                   onPressed: () async {
+                    await playPool(ref);
+
                     final box = await Hive.openBox<Shaft>('shaftsBox');
 
                     final workLog = box.get('work');

@@ -30,7 +30,7 @@ final remainingTimeProvider = StateProvider<int>((ref) => 0);
 final progressProvider = StateProvider<double>((ref) => 0);
 
 // プログレスバーの上に表示する数字を監視する。
-final displayTimeProvider = StateProvider<int>((ref) => 60 * 25);
+final displayTimeProvider = StateProvider<int>((ref) => 60 * 1);
 
 // Pomo の状態を監視する。
 final pomoStateProvider = StateProvider<PomoState>((ref) => PomoState.stopping);

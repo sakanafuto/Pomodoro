@@ -11,6 +11,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 // Project imports:
 import 'package:pomodoro/component/floating_action_button_screen.dart';
 import 'package:pomodoro/component/size_route.dart';
+import 'package:pomodoro/constant/sound.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
@@ -96,9 +97,11 @@ class PomoScreenState extends ConsumerState<PomoScreen>
     if (state == AppLifecycleState.paused) {
       // バックグラウンドに遷移した時
       _handlePaused(ref);
+      stopPool(ref, pool);
     } else if (state == AppLifecycleState.resumed) {
       // フォアグラウンドに復帰した時
       _handleResumed(ref);
+      stopPool(ref, pool);
     }
   }
 
@@ -106,13 +109,15 @@ class PomoScreenState extends ConsumerState<PomoScreen>
   Widget build(BuildContext context) {
     final percent = ref.watch(progressProvider);
     final displayTime = ref.watch(displayTimeProvider);
+    final isSoundPlaying = ref.watch(isSoundPlayingProvider);
 
     final minute = displayTime ~/ 60;
     final second = displayTime - (minute * 60);
 
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
-      floatingActionButton: const FloatingActionButtonScreen(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -142,21 +147,46 @@ class PomoScreenState extends ConsumerState<PomoScreen>
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: LinearPercentIndicator(
-                progressColor: Theme.of(context).colorScheme.primaryContainer,
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
-                percent: percent,
-                animation: true,
-                animateFromLastPercent: true,
-                lineHeight: 8,
-                barRadius: const Radius.circular(16),
-              ),
+              // child: buildLibearIndicator(percent),
+              child: buildCircularIndicator(percent, size.width),
             ),
           ),
-          const SizedBox(height: 64),
+          const Gap(40),
+          isSoundPlaying
+              ? OutlinedButton(
+                  onPressed: () async => stopPool(ref, pool),
+                  child: const Text('stop'),
+                )
+              : const SizedBox(),
         ],
       ),
+      floatingActionButton: const FloatingActionButtonScreen(),
+    );
+  }
+
+  LinearPercentIndicator buildLibearIndicator(double percent) {
+    return LinearPercentIndicator(
+      progressColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      percent: percent,
+      animation: true,
+      animateFromLastPercent: true,
+      lineHeight: 8,
+      barRadius: const Radius.circular(16),
+    );
+  }
+
+  CircularPercentIndicator buildCircularIndicator(
+    double percent,
+    double displayWidth,
+  ) {
+    return CircularPercentIndicator(
+      progressColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      percent: percent,
+      animation: true,
+      animateFromLastPercent: true,
+      radius: displayWidth * .3,
     );
   }
 }

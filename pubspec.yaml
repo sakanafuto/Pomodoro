@@ -26,6 +26,7 @@ dependencies:
   json_serializable: ^6.4.1
   percent_indicator: ^4.0.1
   riverpod_annotation: ^1.0.6
+  soundpool: ^2.3.0
   timezone: ^0.9.0
   wakelock: ^0.6.2
 
@@ -45,5 +46,6 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/se/
     - assets/images/pomodoro-768.png
     - assets/images/pomodoro-1152.png
